@@ -1,8 +1,8 @@
 # PLENA: A Programmable Long-context Efficient Neural Accelerator
 
-![PLENA System Architecture](PLENA_Sys.png)
-
 **PLENA** is a hardware accelerator design and optimization framework for long-context LLM inference. It provides a co-design optimization system that jointly optimizes hardware architecture, precision settings, and inference performance.
+
+![PLENA System Architecture](PLENA_Sys.png)
 
 ## Key Features
 
