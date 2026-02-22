@@ -1,37 +1,64 @@
 # PLENA: A Programmable Long-context Efficient Neural Accelerator
 
-**PLENA** is a hardware accelerator design and optimization framework for long-context LLM inference. It provides a co-design optimization system that jointly optimizes hardware architecture, precision settings, and inference performance.
+**PLENA** is an open-source hardware-software co-designed system optimized for long-context LLM inference in agentic applications. It addresses the memory bandwidth and capacity walls that limit compute utilization during long-context workloads such as tool-use agents, web agents, and command-line agents.
 
-![PLENA System Architecture](PLENA_Sys.png)
+<div style="text-align: center;">
+  <img src="PLENA_Sys.png" alt="PLENA System Architecture" style="max-width: 90%;">
+</div>
+
+---
 
 ## Key Features
 
-- **Multi-objective Optimization**: Jointly optimize accuracy, latency, and area using Bayesian optimization
-- **Hardware-Software Co-design**: Unified framework for hardware parameter tuning and precision configuration
-- **Flexible Precision Support**: MXFP, MXINT, and standard floating-point formats
-- **Extensible Model Library**: Pre-configured support for LLaMA and Qwen model families
+- **Asymmetric Quantization Scheme** -- Efficient mixed-precision representation that minimizes memory footprint while preserving model accuracy
+- **Flattened Systolic Array** -- A novel dataflow architecture with native FlashAttention support, achieving high compute utilization on attention-heavy workloads
+- **Complete Software Stack** -- Custom ISA, compiler, cycle-emulated simulator, and automated design space exploration (DSE)
+- **Multi-Objective Co-Design** -- Bayesian optimization over hardware architecture, precision settings, and inference performance jointly
 
-## Quick Start
+## Performance Highlights
 
-```bash
-# Install dependencies
-pip install -e .
+| Metric | Value |
+|--------|-------|
+| Compute utilization vs. existing accelerators | **8.5x** higher |
+| Throughput vs. NVIDIA A100 | **2.24x** higher |
+| Throughput vs. Google TPU v6e | **3.85x** higher |
 
-# Run optimization search
-python -m co_design.search.search --config co_design/configs/config.toml
-```
+*All comparisons use equivalent multiplier count and memory configurations.*
+
+## System Components
+
+| Component | Description |
+|-----------|-------------|
+| **Co-Design Engine** | Multi-objective Bayesian optimization (BoTorch, TPE, NSGA-II) over hardware and precision parameters |
+| **PLENA RTL** | Synthesizable SystemVerilog hardware design with configurable datapath |
+| **PLENA Simulator** | Cycle-emulated simulator for accuracy and latency evaluation |
+| **PLENA Software** | Compiler and software stack for LLM inference on the PLENA accelerator |
 
 ## Project Structure
 
 ```
 PLENA/
-├── co_design/              # Core co-design optimization module
-│   ├── interface/          # Hardware/simulator abstraction
-│   ├── search/             # Multi-objective optimization engine
-│   └── configs/            # Configuration files
+├── co_design/              # Co-design optimization engine
+│   ├── interface/          # Hardware/simulator abstraction layer
+│   ├── search/             # Multi-objective optimization (Optuna)
+│   └── configs/            # TOML configuration files
+├── PLENA_Software/         # Compiler and software stack
 ├── PLENA_RTL/              # SystemVerilog hardware design
-├── PLENA_Simulator/        # Hardware simulator
-└── doc/                    # Documentation
+├── PLENA_Simulator/        # Cycle-emulated hardware simulator
+└── PLENA_Doc/              # This documentation
+```
+
+## Quick Start
+
+```bash
+# Clone with submodules
+git clone --recursive https://github.com/AICrossSim/PLENA.git
+
+# Install dependencies
+pip install -e .
+
+# Run optimization search
+python -m co_design.search.search --config co_design/configs/config.toml
 ```
 
 ## Publication

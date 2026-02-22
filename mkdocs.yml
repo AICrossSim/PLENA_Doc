@@ -49,14 +49,13 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Architecture: architecture.md
-  - Configuration:
-      - Overview: configuration.md
-      - Hardware Constraints: constraints.md
+  - PLENA System Toolchain: plena_system_toolchain.md
+  - Hardware Configuration: hardware_config.md
+  - ISA Specification: isa_spec.md
+  - Memory Layout: memory_layout.md
   - API Reference:
       - Interface Module: api/interface.md
       - Search Module: api/search.md
-  - Model Library: models.md
 
 extra:
   social:

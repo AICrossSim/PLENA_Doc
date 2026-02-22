@@ -1,4 +1,4 @@
-# Architecture Overview
+# PLENA System Toolchain
 
 PLENA follows a modular architecture designed for hardware-software co-design optimization.
 
