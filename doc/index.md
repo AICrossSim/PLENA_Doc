@@ -8,62 +8,17 @@
 
 ---
 
-## Key Features
-
-- **Asymmetric Quantization Scheme** -- Efficient mixed-precision representation that minimizes memory footprint while preserving model accuracy
-- **Flattened Systolic Array** -- A novel dataflow architecture with native FlashAttention support, achieving high compute utilization on attention-heavy workloads
-- **Complete Software Stack** -- Custom ISA, compiler, cycle-emulated simulator, and automated design space exploration (DSE)
-- **Multi-Objective Co-Design** -- Bayesian optimization over hardware architecture, precision settings, and inference performance jointly
-
-## Performance Highlights
-
-| Metric | Value |
-|--------|-------|
-| Compute utilization vs. existing accelerators | **8.5x** higher |
-| Throughput vs. NVIDIA A100 | **2.24x** higher |
-| Throughput vs. Google TPU v6e | **3.85x** higher |
-
-*All comparisons use equivalent multiplier count and memory configurations.*
-
-## System Components
-
-| Component | Description |
-|-----------|-------------|
-| **Co-Design Engine** | Multi-objective Bayesian optimization (BoTorch, TPE, NSGA-II) over hardware and precision parameters |
-| **PLENA RTL** | Synthesizable SystemVerilog hardware design with configurable datapath |
-| **PLENA Simulator** | Cycle-emulated simulator for accuracy and latency evaluation |
-| **PLENA Software** | Compiler and software stack for LLM inference on the PLENA accelerator |
-
 ## Project Structure
 
-```
-PLENA/
-├── co_design/              # Co-design optimization engine
-│   ├── interface/          # Hardware/simulator abstraction layer
-│   ├── search/             # Multi-objective optimization (Optuna)
-│   └── configs/            # TOML configuration files
-├── PLENA_Software/         # Compiler and software stack
-├── PLENA_RTL/              # SystemVerilog hardware design
-├── PLENA_Simulator/        # Cycle-emulated hardware simulator
-└── PLENA_Doc/              # This documentation
-```
-
-## Quick Start
-
-```bash
-# Clone with submodules
-git clone --recursive https://github.com/AICrossSim/PLENA.git
-
-# Install dependencies
-pip install -e .
-
-# Run optimization search
-python -m co_design.search.search --config co_design/configs/config.toml
-```
+- [**PLENA_Compiler**](https://github.com/AICrossSim/PLENA_Compiler) — Compiler stack targeting the PLENA ISA
+- [**PLENA_Simulator**](https://github.com/AICrossSim/PLENA_Simulator) — Cycle-emulated hardware simulator with complete verilator based simulation flow
+- [**PLENA_RTL**](https://github.com/AICrossSim/PLENA_RTL) — Synthesizable SystemVerilog hardware design
+- [**PLENA_Software**](https://github.com/AICrossSim/PLENA_Software) — Quantization tools and accuracy evalutator
+- **PLENA_Doc** — This documentation
 
 ## Publication
 
-If you use PLENA in your research, please cite:
+If you use PLENA in your research, please cite the following paper (to appear in ISCA 2026):
 
 ```bibtex
 @misc{wu2025combatingmemorywallsoptimization,
@@ -76,5 +31,3 @@ If you use PLENA in your research, please cite:
     url={https://arxiv.org/abs/2509.09505},
 }
 ```
-
-[Paper Link](https://arxiv.org/abs/2509.09505)
