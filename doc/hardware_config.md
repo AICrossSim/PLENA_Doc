@@ -2,7 +2,19 @@
 
 ## Architecture Overview
 
-PLENA is a custom LLM accelerator with a matrix unit for matrix operations. The matrix unit has a BLEN × MLEN compute datapath that processes tiles efficiently, with BLEN × BLEN output granularity per write-out operation.
+PLENA is composed of the following major components:
+
+- Matrix Unit: Handles GEMM, GEMV, and batched matrix multiplication (BMM) operations.
+- Vector Unit: Supports vector operations.
+- Scalar Unit: Supports integer and floating-point scalar operations, including special functions such as `exp`, `reci`, and `sqrt`.
+- Matrix SRAM: Stores matrix data and connects directly to the Matrix Unit. It supports both transposed and non-transposed reads.
+- Vector SRAM: Stores vector data and connects directly to the Vector Unit. It also acts as scratchpad memory for both the Matrix Unit and Vector Unit.
+- Integer SRAM: Stores integer data, primarily address-related data.
+- FP SRAM: Stores floating-point data and connects directly to the Scalar Unit.
+- HBM Controller: Manages HBM access, including prefetch and writeback operations, using TileLink as the protocol.
+
+
+
 
 ## Core Parameters
 
@@ -21,12 +33,6 @@ PLENA is a custom LLM accelerator with a matrix unit for matrix operations. The 
 | Matrix SRAM | 1024 | tiles | 4,194,304 | Each tile = MLEN×MLEN = 4096 elements |
 | Vector SRAM | 4,194,304 | rows | 268,435,456 | Each row = VLEN = 64 elements |
 
-## Off-Chip HBM
-
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| HBM Size | 1 GB | Total off-chip memory |
-| HBM Width | 512 bits | Bus width |
 
 ## Prefetch/Writeback Amounts
 
@@ -129,24 +135,6 @@ Valid total bit widths: **2, 4, 8, 16, 32**
 | MXFP4 | 2 | 1 | 1 | 4 |
 | MXFP8 | 4 | 3 | 1 | 8 |
 | FP16 | 10 | 5 | 1 | 16 |
-
-### Constraint Validation
-
-Constraints are validated in `co_design/search/utils.py`:
-
-```python
-def check_constraints(config: dict) -> bool:
-    """
-    Validates hardware configuration against all constraints.
-
-    Returns:
-        True if all constraints are satisfied
-        False if any constraint is violated
-    """
-```
-
-!!! warning "Invalid Configurations"
-    Configurations that violate constraints are automatically pruned during optimization. The optimizer will skip these configurations and sample new ones.
 
 ### Common Constraint Violations
 

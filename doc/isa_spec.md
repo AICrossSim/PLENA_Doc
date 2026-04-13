@@ -73,6 +73,7 @@ Refer to `plena_settings.toml` for the detailed parameters.
 | **Vector[i]** | i-th entry of the Vector SRAM |
 
 **Addressing Strides:**
+
 | Instruction | MSRAM Stride | Purpose |
 |-------------|--------------|---------|
 | M_MM | BLEN | Selects BLEN-column slice within tile |

@@ -32,6 +32,22 @@ nix develop
 git submodule update --remote --merge
 ```
 
-#### Running the Testing
+#### Running Tests
 
+Use the following commands to run simulator tasks.
 
+Standard mode:
+
+```bash
+just build-emulator [task]
+# Example:
+just build-behave-sim linear
+```
+
+Debug mode:
+
+```bash
+just build-emulator-debug [task]
+# Example:
+just build-behave-sim-debug linear
+```

@@ -1,4 +1,4 @@
-# PLENA: A Programmable Long-context Efficient Neural Accelerator
+# Welcome to PLENA
 
 **PLENA** is an open-source hardware-software co-designed system optimized for long-context LLM inference in agentic applications. It addresses the memory bandwidth and capacity walls that limit compute utilization during long-context workloads such as tool-use agents, web agents, and command-line agents.
 
@@ -14,7 +14,6 @@
 - [**PLENA_Simulator**](https://github.com/AICrossSim/PLENA_Simulator) — Cycle-emulated hardware simulator with complete verilator based simulation flow
 - [**PLENA_RTL**](https://github.com/AICrossSim/PLENA_RTL) — Synthesizable SystemVerilog hardware design
 - [**PLENA_Software**](https://github.com/AICrossSim/PLENA_Software) — Quantization tools and accuracy evalutator
-- **PLENA_Doc** — This documentation
 
 ## Publication
 
