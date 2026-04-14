@@ -3,7 +3,7 @@
 **PLENA** is an open-source hardware-software co-designed system optimized for long-context LLM inference in agentic applications. It addresses the memory bandwidth and capacity walls that limit compute utilization during long-context workloads such as tool-use agents, web agents, and command-line agents.
 
 <div style="text-align: center;">
-  <img src="PLENA_Sys.png" alt="PLENA System Architecture" style="max-width: 90%;">
+  <img src="figs/PLENA_Sys.png" alt="PLENA System Architecture" style="max-width: 90%;">
 </div>
 
 ---

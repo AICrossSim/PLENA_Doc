@@ -28,8 +28,8 @@ theme:
     - navigation.expand
     - search.highlight
     - content.code.copy
-  logo: plena_logo.png
-  favicon: plena_logo.png
+  logo: figs/plena_logo.png
+  favicon: figs/plena_logo.png
 
 plugins:
   - search
@@ -52,7 +52,12 @@ nav:
   - Core Overview:
       - Hardware Configuration: hardware_config.md
       - ISA Specification: isa_spec.md
-  - PLENA System Toolchain: plena_system_toolchain.md
+      - Pipeline: pipeline.md
+  - Toolchain:
+      - Accuracy Evaluator: accuracy_evaluator.md
+      - Transactional Emulator: transactional_emulator.md
+      - Analytic Model: analytic_model.md
+      - Co-Design Toolchain: co_design.md
 
 extra:
   social:
