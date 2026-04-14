@@ -13,10 +13,15 @@ PLENA is composed of the following major components:
 - FP SRAM: Stores floating-point data and connects directly to the Scalar Unit.
 - HBM Controller: Manages HBM access, including prefetch and writeback operations, using TileLink as the protocol.
 
+---
 
+## Compute
 
+![PLENA Compute System](figs/Flattened_Sys.png)
 
-## Core Parameters
+The compute subsystem consists of the Matrix, Vector, and Scalar units, orchestrated around a shared register file and parameterized by the core tile dimensions.
+
+### Core Parameters
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
@@ -26,15 +31,49 @@ PLENA is composed of the following major components:
 | HLEN | 16 | Head dimension for partitioned attention |
 | BROADCAST_AMOUNT | 4 | Broadcast width |
 
-## On-Chip SRAM Sizes
+### Execution Units
+
+- Matrix Unit: BLEN × MLEN compute datapath with BLEN × BLEN output granularity
+- Vector Unit: VLEN-wide (64) vector operations
+- Scalar Unit: Integer/float scalar operations
+- HBM Controller: High-bandwidth memory access
+
+### Register File
+
+#### General Purpose Registers
+- gp0-gp15: 16 general purpose registers
+- gp0 is hardwired to 0
+
+#### Floating Point Registers
+- f0-f7: 8 floating point registers
+
+#### Address Registers
+- a0-a7: 8 address registers for HBM access
+
+### Matrix/Vector Length Constraints
+
+| Constraint | Description |
+|------------|-------------|
+| `MLEN >= BLEN` | Matrix length must be at least block length |
+| `MLEN = VLEN` | Matrix and vector lengths must match |
+| `MLEN % BLEN == 0` | Matrix length must be divisible by block length |
+
+---
+
+## Memory
+
+![PLENA Memory System](figs/HBM_sys.png)
+
+The memory subsystem spans on-chip SRAMs (Matrix, Vector, Integer, FP) and off-chip HBM, connected through a TileLink-based HBM controller that handles prefetch and writeback.
+
+### On-Chip SRAM Sizes
 
 | Memory | Config Value | Unit | Total Elements | Description |
 |--------|--------------|------|----------------|-------------|
 | Matrix SRAM | 1024 | tiles | 4,194,304 | Each tile = MLEN×MLEN = 4096 elements |
 | Vector SRAM | 4,194,304 | rows | 268,435,456 | Each row = VLEN = 64 elements |
 
-
-## Prefetch/Writeback Amounts
+### Prefetch/Writeback Amounts
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
@@ -42,63 +81,12 @@ PLENA is composed of the following major components:
 | HBM_V_Prefetch_Amount | 4 | Rows per H_PREFETCH_V (BLEN rows) |
 | HBM_V_Writeback_Amount | 4 | Rows per H_STORE_V (BLEN rows) |
 
-## Data Precision
-
-### On-Chip SRAM (Plain format)
-| Memory | Format | Type | Description |
-|--------|--------|------|-------------|
-| Matrix SRAM | Plain | BF16 (E8M7) | Weights after dequantization |
-| Vector SRAM | Plain | BF16 (E8M7) | Activations and outputs |
-| Scalar FP | Plain | BF16 (E8M7) | FP register file |
-
-### Off-Chip HBM (MXFP format)
-| Data Type | Format | Element | Scale | Description |
-|-----------|--------|---------|-------|-------------|
-| Weights | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
-| KV Cache | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
-| Activations | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
-
-**MXFP Note:** HBM size = logical_size × 1.125 (accounts for scale bytes)
-
-## Register File
-
-### General Purpose Registers
-- gp0-gp15: 16 general purpose registers
-- gp0 is hardwired to 0
-
-### Floating Point Registers
-- f0-f7: 8 floating point registers
-
-### Address Registers
-- a0-a7: 8 address registers for HBM access
-
-## Preloaded Constants (FP_MEM)
+### Preloaded Constants (FP_MEM)
 
 FP_MEM is a small scalar memory for floating-point constants, preloaded before execution.
 - Use `S_LD_FP` to load values into FP registers
 - Contents are **workload-specific** (see workload prompt for exact values)
 - FP_MEM[0] is always 0.0 across all workloads
-
-## Execution Units
-
-- Matrix Unit: BLEN × MLEN compute datapath with BLEN × BLEN output granularity
-- Vector Unit: VLEN-wide (64) vector operations
-- Scalar Unit: Integer/float scalar operations
-- HBM Controller: High-bandwidth memory access
-
----
-
-## Hardware Constraints
-
-PLENA enforces strict constraints to ensure valid hardware configurations. These constraints are automatically checked during optimization.
-
-### Matrix/Vector Length Relationships
-
-| Constraint | Description |
-|------------|-------------|
-| `MLEN >= BLEN` | Matrix length must be at least block length |
-| `MLEN = VLEN` | Matrix and vector lengths must match |
-| `MLEN % BLEN == 0` | Matrix length must be divisible by block length |
 
 ### SRAM Depth Requirements
 
@@ -115,6 +103,32 @@ PLENA enforces strict constraints to ensure valid hardware configurations. These
 |------------|-------------|
 | `HBM_M_Prefetch_Amount >= BLEN` | Matrix prefetch must be at least block length |
 | `HBM_V_Prefetch_Amount >= BLEN` | Vector prefetch must be at least block length |
+
+---
+
+## Quantization
+
+![PLENA Precision Formats](figs/Precision.png)
+
+PLENA stores weights, activations, and KV cache in MXFP format off-chip, and dequantizes into BF16 on-chip for compute.
+
+### On-Chip SRAM (Plain format)
+
+| Memory | Format | Type | Description |
+|--------|--------|------|-------------|
+| Matrix SRAM | Plain | BF16 (E8M7) | Weights after dequantization |
+| Vector SRAM | Plain | BF16 (E8M7) | Activations and outputs |
+| Scalar FP | Plain | BF16 (E8M7) | FP register file |
+
+### Off-Chip HBM (MXFP format)
+
+| Data Type | Format | Element | Scale | Description |
+|-----------|--------|---------|-------|-------------|
+| Weights | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
+| KV Cache | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
+| Activations | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
+
+**MXFP Note:** HBM size = logical_size × 1.125 (accounts for scale bytes)
 
 ### Precision Parameter Constraints
 
@@ -136,7 +150,9 @@ Valid total bit widths: **2, 4, 8, 16, 32**
 | MXFP8 | 4 | 3 | 1 | 8 |
 | FP16 | 10 | 5 | 1 | 16 |
 
-### Common Constraint Violations
+---
+
+## Common Constraint Violations
 
 | Error | Cause | Solution |
 |-------|-------|----------|
