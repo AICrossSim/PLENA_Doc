@@ -4,16 +4,6 @@ To evaluate architectural trade-offs, we developed a transaction-level (cycle-ap
 
 The emulator supports the full PLENA architectural design space, including asymmetric mixed-precision arithmetic. By bridging analytic modeling and RTL simulation, it enables accurate evaluation of architectural mechanisms — such as flattened systolic mapping and on-chip FlashAttention — while remaining significantly faster than RTL simulation. We plan to open-source this emulator to facilitate research on LLM accelerator architectures.
 
-## Role in the Toolchain
-
-In the co-design loop, the Transactional Emulator provides the **latency** objective:
-
-| Objective | Description | Source |
-|-----------|-------------|--------|
-| Accuracy | Model accuracy on evaluation tasks | Accuracy Evaluator |
-| **Latency** | End-to-end inference time | Transactional Emulator |
-| Area | Hardware resource utilization | Analytic Model |
-
 ## What It Models
 
 - **Event-driven execution** of the generated PLENA machine code at cycle granularity.
@@ -31,11 +21,3 @@ The transactional emulator sits between two other evaluation layers:
 - **More accurate than the analytic model** — captures memory–compute interaction and bank-level DRAM effects that closed-form cost models cannot represent.
 
 This makes it the right tool for quantitative trade-off studies where memory bandwidth is the dominant bottleneck, as in long-context LLM inference.
-
-## Interface
-
-The co-design layer queries the emulator through:
-
-- **`get_latency()`** in `co_design/interface/interface.py` — Runs the transactional emulator for an LLM inference workload under the active hardware/instruction configuration and returns total latency.
-
-Configuration is sourced from the same TOML file the rest of the toolchain uses; changes from the search loop are persisted via `write_active_config_to_toml()` before each evaluation.

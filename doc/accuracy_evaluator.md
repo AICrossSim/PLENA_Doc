@@ -4,16 +4,6 @@ The Accuracy Evaluator measures how PLENA's quantization choices affect model qu
 
 It lives in the [`PLENA_Software`](https://github.com/AICrossSim/PLENA_Software) repository.
 
-## Role in the Toolchain
-
-In the co-design loop, the Accuracy Evaluator provides the **accuracy** objective:
-
-| Objective | Description | Source |
-|-----------|-------------|--------|
-| **Accuracy** | Model quality under the chosen quantization config | Accuracy Evaluator |
-| Latency | End-to-end inference time | Transactional Emulator |
-| Area | Hardware resource utilization | Analytic Model |
-
 ## What It Evaluates
 
 - **Quantization fidelity** — Simulates PLENA's on-device numerics (MXFP / MXINT / FP formats with configurable mantissa, exponent, and shared-scale granularity) applied to weights, activations, and the KV cache.
