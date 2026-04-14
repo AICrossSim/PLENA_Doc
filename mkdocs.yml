@@ -52,7 +52,6 @@ nav:
   - Core Overview:
       - Hardware Configuration: hardware_config.md
       - ISA Specification: isa_spec.md
-      - Memory Layout: memory_layout.md
   - PLENA System Toolchain: plena_system_toolchain.md
 
 extra:

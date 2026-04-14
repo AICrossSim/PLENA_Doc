@@ -708,7 +708,7 @@ scale_location = base_addr + scale_reg + (element_offset / 8)
 
 **Usage:** `scale_reg = scale_location - (element_offset / 8)`
 
-Must be called before each tensor's prefetch. See memory_layout.md for MXFP details.
+Must be called before each tensor's prefetch.
 
 ### C_SET_STRIDE_REG
 
