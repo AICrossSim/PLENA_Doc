@@ -1,5 +1,9 @@
 # PLENA Hardware Configuration
 
+<div style="text-align: center;">
+  <img src="figs/Accelerator_Config.png" alt="PLENA Accelerator Hardware Block Diagram" style="max-width: 90%;">
+</div>
+
 ## Architecture Overview
 
 PLENA is composed of the following major components:
