@@ -59,6 +59,7 @@ nav:
       - Transactional Emulator: transactional_emulator.md
       - Analytic Model: analytic_model.md
       - Co-Design Toolchain: co_design.md
+  - Related Projects: related_projects.md
 
 extra:
   social:
