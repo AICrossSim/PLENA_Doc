@@ -63,3 +63,6 @@ ckpts_*
 *.db-journal
 co_design/interface/config.toml
 target/
+
+
+*.pdf
