@@ -19,20 +19,6 @@ PLENA is composed of the following major components:
 
 ---
 
-
-## Register File
-
-### General Purpose Registers
-- gp0-gp15: 16 general purpose registers
-- gp0 is hardwired to 0
-
-### Floating Point Registers
-- f0-f7: 8 floating point registers
-
-### Address Registers
-- a0-a7: 8 address registers for HBM access
-
-
 ## Compute Units
 
 ![PLENA Compute System](figs/Flattened_Sys.png)
@@ -77,13 +63,17 @@ The Scalar Unit handles control-flow arithmetic and the small amount of FP math 
 - **FP_SRAM_DEPTH** — Number of entries in `FP_MEM`; must be at least `3 × MLEN + FP_CONSTANT_NUM` to cover preloaded FP constants and staging space for `S_MAP_V_FP`.
 - **16 GP registers / 8 FP registers / 8 HBM address registers** — Architectural register file visible to all scalar instructions (`gp0` is hardwired to 0, `f0` to 0.0).
 
-### Matrix/Vector Length Constraints
+## Register File
 
-| Constraint | Description |
-|------------|-------------|
-| `MLEN >= BLEN` | Matrix length must be at least block length |
-| `MLEN = VLEN` | Matrix and vector lengths must match |
-| `MLEN % BLEN == 0` | Matrix length must be divisible by block length |
+### General Purpose Registers
+- gp0-gp15: 16 general purpose registers
+- gp0 is hardwired to 0
+
+### Floating Point Registers
+- f0-f7: 8 floating point registers
+
+### Address Registers
+- a0-a7: 8 address registers for HBM access
 
 ---
 

@@ -1,36 +1,6 @@
 # PLENA Instruction Set Architecture (ISA) Specification
 
-## Register Types
-
-The PLENA architecture supports four types of registers:
-
-- **gp_reg** (`gp0` to `gp15`): 16 general-purpose integer registers (gp0-gp15 only, no gp16+)
-  - **gp0 is always 0**: Use `S_ADDI_INT gpX, gp0, value` to load immediate values.
-- **fp_reg** (`f0` to `f7`): 8 floating-point registers
-  - **f0 is always 0.0**: Use `S_ADD_FP fX, f0, f0` to initialize any FP register to 0.0.
-- **hbm_addr_reg** (`a0` to `a7`): 8 HBM address registers
-  - **CRITICAL: HBM address registers are NOT auto-initialized!** You MUST explicitly set each address register with `C_SET_ADDR_REG` before using it in `H_PREFETCH_*` or `H_STORE_V`. Even for address 0, use `C_SET_ADDR_REG a0, gp0, gp0` to initialize a0 to 0.
-
-**Important:** There are exactly 16 GP registers (gp0-gp15). The assembler may silently accept invalid register names without error, causing unexpected behavior at runtime. Always verify register usage stays within valid bounds.
-
-## Assembly Syntax
-
-Instructions are written with the opcode followed by a space, then comma-separated operands:
-
-```
-OPCODE operand1, operand2, operand3, ...
-```
-
-**Register naming conventions:**
-- General-purpose registers: `gp0`, `gp1`, ..., `gp15`
-- Floating-point registers: `f0`, `f1`, ..., `f7`
-- HBM address registers: `a0`, `a1`, ..., `a7`
-
-**Example:**
-```asm
-S_ADDI_INT gp1, gp0, 128    ; gp1 = gp0 + 128
-M_MM 0, gp2, gp4            ; Matrix multiply using Vector[gp2] and Matrix[gp4]
-```
+The PLENA ISA is designed to cover all operations required for transformer inference. The instructions are structured to balance efficiency with flexibility and are built to support multiple transformer-based models and computation optimizations.
 
 ## Instruction Format
 
@@ -62,6 +32,18 @@ Refer to `plena_settings.toml` for the detailed parameters.
 | **HBM_M_Prefetch_Amount** | Number of MLEN rows fetched from HBM | 64 |
 | **HBM_V_Prefetch_Amount** | Number of rows fetched per H_PREFETCH_V | 4 |
 
+## Register Types
+
+The PLENA architecture supports four types of registers:
+
+- **gp_reg** (`gp0` to `gp15`): 16 general-purpose integer registers (gp0-gp15 only, no gp16+)
+  - **gp0 is always 0**: Use `S_ADDI_INT gpX, gp0, value` to load immediate values.
+- **fp_reg** (`f0` to `f7`): 8 floating-point registers
+  - **f0 is always 0.0**: Use `S_ADD_FP fX, f0, f0` to initialize any FP register to 0.0.
+- **hbm_addr_reg** (`a0` to `a7`): 8 HBM address registers
+  - **CRITICAL: HBM address registers are NOT auto-initialized!** You MUST explicitly set each address register with `C_SET_ADDR_REG` before using it in `H_PREFETCH_*` or `H_STORE_V`. Even for address 0, use `C_SET_ADDR_REG a0, gp0, gp0` to initialize a0 to 0.
+
+**Important:** There are exactly 16 GP registers (gp0-gp15). The assembler may silently accept invalid register names without error, causing unexpected behavior at runtime. Always verify register usage stays within valid bounds.
 
 ## Matrix (M-Type) Instructions
 
