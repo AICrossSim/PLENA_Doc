@@ -16,6 +16,6 @@ The following projects are developed alongside PLENA and address complementary c
 
 ---
 
-## DLLM
+## DART
 
-**[DLLM](https://arxiv.org/abs/2601.20706)** is an NPU architecture design targeting the sampling bottleneck in diffusion-based LLMs. It uses non-GEMM vector primitives and a decoupled mixed-precision memory hierarchy to efficiently handle diffusion LLM sampling, which can consume up to 70% of inference latency on conventional GPUs.
+**[DART](https://arxiv.org/abs/2601.20706)** is an NPU architecture design targeting the sampling bottleneck in diffusion-based LLMs. It uses non-GEMM vector primitives and a decoupled mixed-precision memory hierarchy to efficiently handle diffusion LLM sampling, which can consume up to 70% of inference latency on conventional GPUs.

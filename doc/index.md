@@ -10,16 +10,6 @@ The project is led by Dr. Yiren Zhao (Imperial College London) and Prof. Robert 
 
 ---
 
-## Project Overview
-
-PLENA is structured around a full-stack approach to long-context agentic LLM inference:
-
-- **Analytic modelling** of memory bandwidth and capacity bottlenecks across different hardware configurations.
-- **Hardware-software co-design** combining ISA extensions, a custom compiler, and a transactional emulator to explore the design space.
-- **Accuracy evaluation** to ensure optimizations (e.g., quantization, sparsity) preserve model quality on agentic benchmarks.
-
----
-
 ## Current Status
 
 - ✅ Analytic model for long-context inference bottleneck analysis
