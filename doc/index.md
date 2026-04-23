@@ -17,7 +17,6 @@ The project is led by Dr. Yiren Zhao (Imperial College London) and Prof. Robert 
 - ✅ Compiler pipeline for mapping LLM operators to PLENA hardware
 - ✅ Transactional emulator for cycle-approximate simulation
 - ✅ Hardware-software co-design exploration framework
-- ✅ Accuracy evaluator with quantization and sparsity support
 - ⏹️ Full FPGA prototype integration
 - ⏹️ End-to-end agentic workload benchmarking on hardware
 

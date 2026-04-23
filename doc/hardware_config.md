@@ -1,8 +1,6 @@
 # PLENA Hardware Configuration
 
-<div style="text-align: center;">
-  <img src="figs/Accelerator_Config.png" alt="PLENA Accelerator Hardware Block Diagram" style="max-width: 90%;">
-</div>
+![PLENA Accelerator Hardware Block Diagram](figs/Accelerator_Config.png)
 
 ## Architecture Overview
 
