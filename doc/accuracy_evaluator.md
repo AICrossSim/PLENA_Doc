@@ -12,6 +12,8 @@ PLENA's quantization pipeline applies three targeted optimizations on top of the
 
 These choices are exposed to the rest of the system through the TOML precision configuration, which specifies the format, bit width, and block size for each tensor class.
 
+![PLENA Precision Formats](figs/Precision.png)
+
 ## Accuracy Evaluator
 
 The Accuracy Evaluator measures how PLENA's quantization choices affect model quality on real workloads. Given a target model and a precision configuration (weight / activation / KV-cache formats, bit widths, scale granularity), it runs the model on a specified workload and reports task accuracy, so the co-design loop can trade precision for area and latency without silently degrading model quality.

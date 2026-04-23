@@ -19,8 +19,6 @@ PLENA is composed of the following major components:
 
 ## Compute Units
 
-![PLENA Compute System](figs/Flattened_Sys.png)
-
 The compute subsystem consists of the Matrix, Vector, and Scalar units, orchestrated around a shared register file and parameterized by the core tile dimensions.
 
 ### Core Parameters
@@ -33,6 +31,8 @@ The compute subsystem consists of the Matrix, Vector, and Scalar units, orchestr
 | HLEN | 16 | Tile size of partitioned Matrix Unit (head dimension for partitioned attention) | [32, ..., 256] |
 
 ### Matrix Unit
+
+![Flattened Systolic Array](figs/Flattened_Sys.png)
 
 The Matrix Unit is a systolic array that executes all dense linear-algebra primitives: GEMM (`M_MM` / `M_TMM`), GEMV (`M_MV` / `M_TMV`), and batched/partitioned matmul for multi-head attention (`M_BMM` / `M_BTMM`). Each GEMM call fetches a `(BLEN, MLEN)` tile from Vector SRAM and a `(MLEN, BLEN)` tile from Matrix SRAM, multiplies them, and accumulates the partial product inside the array. Results are drained to Vector SRAM in `BLEN × BLEN` chunks via `M_MM_WO`. The transposed variants (`M_TMM`, `M_TMV`) read the Matrix SRAM tile with a transposed address pattern, which lets the hardware consume HBM weights that are stored as `W.T` without an explicit transpose pass.
 
@@ -88,20 +88,6 @@ The memory subsystem spans on-chip SRAMs (Matrix, Vector, Integer, FP) and off-c
 | Matrix SRAM | 1024 | tiles | 4,194,304 | Each tile = MLEN×MLEN = 4096 elements |
 | Vector SRAM | 4,194,304 | rows | 268,435,456 | Each row = VLEN = 64 elements |
 
-### Prefetch/Writeback Amounts
-
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| HBM_M_Prefetch_Amount | 64 | Elements per H_PREFETCH_M (one MLEN row) |
-| HBM_V_Prefetch_Amount | 4 | Rows per H_PREFETCH_V (BLEN rows) |
-| HBM_V_Writeback_Amount | 4 | Rows per H_STORE_V (BLEN rows) |
-
-### Preloaded Constants (FP_MEM)
-
-FP_MEM is a small scalar memory for floating-point constants, preloaded before execution.
-- Use `S_LD_FP` to load values into FP registers
-- Contents are **workload-specific** (see workload prompt for exact values)
-- FP_MEM[0] is always 0.0 across all workloads
 
 ### SRAM Depth Requirements
 
@@ -112,20 +98,7 @@ FP_MEM is a small scalar memory for floating-point constants, preloaded before e
 | `INT_SRAM_DEPTH >= num_hidden_layers * REPEAT_SETTINGS + FIXED_CONSTANT_NUM` | Integer SRAM for layer constants |
 | `FP_SRAM_DEPTH >= 3 * MLEN + FP_CONSTANT_NUM` | FP SRAM for floating-point operations |
 
-### HBM Prefetch Constraints
-
-| Constraint | Description |
-|------------|-------------|
-| `HBM_M_Prefetch_Amount >= BLEN` | Matrix prefetch must be at least block length |
-| `HBM_V_Prefetch_Amount >= BLEN` | Vector prefetch must be at least block length |
-
 ---
-
-## Quantization
-
-![PLENA Precision Formats](figs/Precision.png)
-
-PLENA stores weights, activations, and KV cache in MXFP format off-chip, and dequantizes into BF16 on-chip for compute.
 
 ### On-Chip SRAM (Plain format)
 
