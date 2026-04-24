@@ -1,4 +1,4 @@
-## Compiler
+# Compiler
 
 PLENA provides two compiler approaches.
 

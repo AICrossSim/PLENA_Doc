@@ -116,29 +116,6 @@ The memory subsystem spans on-chip SRAMs (Matrix, Vector, Integer, FP) and off-c
 | KV Cache | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
 | Activations | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
 
-**MXFP Note:** HBM size = logical_size × 1.125 (accounts for scale bytes)
-
-### Precision Parameter Constraints
-
-All precision formats must have power-of-two total bit widths:
-
-```
-is_power_of_two(WT_MXFP_MANT_WIDTH + WT_MXFP_EXP_WIDTH + 1) == True
-is_power_of_two(ACT_MXFP_MANT_WIDTH + ACT_MXFP_EXP_WIDTH + 1) == True
-is_power_of_two(KV_MXFP_MANT_WIDTH + KV_MXFP_EXP_WIDTH + 1) == True
-```
-
-Valid total bit widths: **2, 4, 8, 16, 32**
-
-#### Example Valid Configurations
-
-| Format | Mantissa | Exponent | Sign | Total |
-|--------|----------|----------|------|-------|
-| MXFP4 | 2 | 1 | 1 | 4 |
-| MXFP8 | 4 | 3 | 1 | 8 |
-| FP16 | 10 | 5 | 1 | 16 |
-
----
 
 ## Common Constraint Violations
 
