@@ -52,17 +52,22 @@ The Scalar Unit handles control-flow arithmetic and the small amount of FP math 
 - **FP_SRAM_DEPTH** — Number of entries in `FP_MEM`; must be at least `3 × MLEN + FP_CONSTANT_NUM` to cover preloaded FP constants and staging space for `S_MAP_V_FP`.
 - **16 GP registers / 8 FP registers / 8 HBM address registers** — Architectural register file visible to all scalar instructions (`gp0` is hardwired to 0, `f0` to 0.0).
 
-## Register File
+## Registers
+
+There are three types of registers in the PLENA architecture: general purpose registers, floating point registers, and address registers.
 
 ### General Purpose Registers
+Mainly used for integer operations and address computation.
 - gp0-gp15: 16 general purpose registers
 - gp0 is hardwired to 0
 
 ### Floating Point Registers
+Mainly used for scalarFP operations.
 - f0-f7: 8 floating point registers
+- f0 is hardwired to 0.0
 
 ### Address Registers
-- a0-a7: 8 address registers for HBM access
+- a0-a7: 8 address registers for off-chip memory access
 
 ---
 
@@ -70,24 +75,19 @@ The Scalar Unit handles control-flow arithmetic and the small amount of FP math 
 
 ![PLENA Memory System](figs/HBM_sys.png)
 
-The memory subsystem spans on-chip SRAMs (Matrix, Vector, Integer, FP) and off-chip HBM, connected through a TileLink-based HBM controller that handles prefetch and writeback.
+The memory subsystem spans four on-chip SRAMs (Matrix, Vector, INT, FP) and off-chip HBM, linked by a TileLink-based memory controller that issues prefetch and writeback transactions on behalf of the compute units.
 
-### On-Chip SRAM Sizes
+### On-Chip SRAM
 
-| Memory | Config Value | Unit | Total Elements | Description |
-|--------|--------------|------|----------------|-------------|
-| Matrix SRAM | 1024 | tiles | 4,194,304 | Each tile = MLEN×MLEN = 4096 elements |
-| Vector SRAM | 4,194,304 | rows | 268,435,456 | Each row = VLEN = 64 elements |
+- **Matrix SRAM** — Double-buffered weight and KV-cache store for tiles that are streamed in once per use and do not need to be kept hot. Load and drain ports operate concurrently, so the next tile can be prefetched from HBM while the current one feeds the systolic array. Its defining feature is a bank layout that serves both non-transposed and transposed reads at full bandwidth, letting `M_TMM` / `M_TMV` consume weights stored as `W.T` without a separate transpose pass and without duplicated storage or extra muxing.
 
+![Matrix SRAM](figs/Transposed_SRAM.png)
 
-### SRAM Depth Requirements
+- **Vector SRAM** — Primary scratchpad for activations and intermediate results. It sinks the `BLEN × BLEN` drains from the Matrix Unit and all Vector Unit outputs, and is the only SRAM that participates in HBM prefetch/writeback for activation traffic. All accesses are `VLEN`-aligned.
 
-| Constraint | Description |
-|------------|-------------|
-| `MATRIX_SRAM_DEPTH >= 2 * MLEN` | Matrix SRAM needs 2x matrix length |
-| `VECTOR_SRAM_DEPTH >= 2 * head_dim + (hidden_dim // VLEN)` | Vector SRAM based on model dimensions |
-| `INT_SRAM_DEPTH >= num_hidden_layers * REPEAT_SETTINGS + FIXED_CONSTANT_NUM` | Integer SRAM for layer constants |
-| `FP_SRAM_DEPTH >= 3 * MLEN + FP_CONSTANT_NUM` | FP SRAM for floating-point operations |
+- **FP SRAM (`FP_MEM`)** — Small constant store for preloaded FP values (e.g. normalizer constants, `e`). Wired directly to the Scalar Unit through `S_LD_FP` / `S_ST_FP`, and bridged into Vector SRAM by `S_MAP_V_FP`. Depth is set by `FP_SRAM_DEPTH`.
+
+- **INT SRAM (`INT_MEM`)** — Small constant store for integer values used in address computation, such as per-layer base offsets. Accessed only by the scalar integer path via `S_LD_INT` / `S_ST_INT`. Depth is set by `INT_SRAM_DEPTH`.
 
 ---
 
@@ -106,13 +106,3 @@ The memory subsystem spans on-chip SRAMs (Matrix, Vector, Integer, FP) and off-c
 | Weights | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
 | KV Cache | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
 | Activations | MXFP | E4M3 | E8M0 | 8 elements share 1 scale |
-
-
-## Common Constraint Violations
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `MLEN < BLEN` | Block length too large | Reduce BLEN or increase MLEN |
-| `MLEN % BLEN != 0` | Incompatible lengths | Choose MLEN as multiple of BLEN |
-| `SRAM overflow` | Insufficient SRAM depth | Increase SRAM depth or reduce MLEN |
-| `Invalid bit width` | Non-power-of-two width | Adjust mantissa/exponent widths |
