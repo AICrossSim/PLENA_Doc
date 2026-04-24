@@ -21,15 +21,6 @@ PLENA is composed of the following major components:
 
 The compute subsystem consists of the Matrix, Vector, and Scalar units, orchestrated around a shared register file and parameterized by the core tile dimensions.
 
-### Core Parameters
-
-| Parameter | Value | Description | Tunable Range |
-|-----------|-------|-------------|---------------|
-| MLEN | 64 | Tile size of Matrix Unit | [2, 4, ..., 1024] |
-| VLEN | 64 | Tile size of Vector Unit | [2, 4, ..., 1024] |
-| BLEN | 4 | Tile size of Block Unit (output tile granularity) | [2, 4, ..., 64] |
-| HLEN | 16 | Tile size of partitioned Matrix Unit (head dimension for partitioned attention) | [32, ..., 256] |
-
 ### Matrix Unit
 
 ![Flattened Systolic Array](figs/Flattened_Sys.png)
