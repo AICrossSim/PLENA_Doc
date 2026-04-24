@@ -56,7 +56,6 @@ The PLENA architecture supports four types of registers:
 - **fp_reg** (`f0` to `f7`): 8 floating-point registers
   - **f0 is always 0.0**: Use `S_ADD_FP fX, f0, f0` to initialize any FP register to 0.0.
 - **hbm_addr_reg** (`a0` to `a7`): 8 HBM address registers
-  - **CRITICAL: HBM address registers are NOT auto-initialized!** You MUST explicitly set each address register with `C_SET_ADDR_REG` before using it in `H_PREFETCH_*` or `H_STORE_V`. Even for address 0, use `C_SET_ADDR_REG a0, gp0, gp0` to initialize a0 to 0.
 
 ## Matrix (M-Type) Instructions
 
@@ -70,10 +69,6 @@ M-type instructions drive the systolic array. Compute instructions (`M_MM`, `M_T
 | M_TMM        | `MLEN × BLEN`| Select `BLEN`-row slice (transposed) |
 | M_MM_WO      | `BLEN`       | Output column block |
 | H_PREFETCH_M | `MLEN × MLEN`| Tile destination address |
-
-**Vector SRAM:** All read/write addresses must be multiples of `VLEN`.
-
-> **Note on M_MM vs. M_TMM operand order:** `M_MM` uses `rs1` for the Matrix SRAM address and `rs2` for Vector SRAM; `M_TMM` swaps them. The per-instruction "Operand Order" blocks below are authoritative.
 
 ### M_MM
 
@@ -247,15 +242,6 @@ Element-wise subtraction: `Vector_SRAM[rs2] − Vector_SRAM[rs1]`. Note the oper
 
 Element-wise subtraction between a vector and a broadcast scalar. The `rorder` field controls operand order. Operand `rs2` is an FP register index.
 
-**Example:**
-```asm
-; Negate a vector: -x = 0 - x (use f0 = 0.0 with rorder = 1)
-V_SUB_VF gp2, gp1, f0, gp0, 1    ; Vector_SRAM[gp2] = 0.0 - Vector_SRAM[gp1]
-
-; Subtract scalar from vector: x - 1.0 (rorder = 0)
-V_SUB_VF gp2, gp1, f1, gp0, 0    ; Vector_SRAM[gp2] = Vector_SRAM[gp1] - f1
-```
-
 ### V_MUL_VV
 
 **Format:** `V_MUL_VV rd, rs1, rs2, rmask`
@@ -339,12 +325,6 @@ Find the maximum over the masked elements of `Vector_SRAM[gp_reg<rs1>]` and upda
 **Format:** `S_ADDI_INT rd, rs1, imm`
 
 **Operation:** `gp_reg<rd> = gp_reg<rs1> + imm`
-
-**Example:**
-```asm
-S_ADDI_INT gp1, gp0, 128    ; gp1 = 0 + 128 = 128
-S_ADDI_INT gp2, gp1, 64     ; gp2 = 128 + 64 = 192
-```
 
 #### S_SUB_INT
 
