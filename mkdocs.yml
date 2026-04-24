@@ -53,6 +53,7 @@ nav:
       - Hardware Configuration: hardware_config.md
       - ISA Specification: isa_spec.md
       - Pipeline: pipeline.md
+      - Design Space: design_space.md
   - Toolchain:
       - Compiler: compiler.md
       - Accuracy Evaluator: accuracy_evaluator.md
