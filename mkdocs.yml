@@ -7,6 +7,7 @@ repo_name: AICrossSim/PLENA_Doc
 
 docs_dir: doc
 site_dir: site
+use_directory_urls: false
 
 theme:
   name: material
