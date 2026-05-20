@@ -1,5 +1,10 @@
 # Analytic Model
 
+<div style="text-align: center;">
+  <img src="figs/PLENA_Sys_analytic.png" alt="Regression-based analytic models highlighted in the PLENA system" style="max-width: 90%;">
+  <p><em>The regression-based analytic models within the PLENA toolchain.</em></p>
+</div>
+
 The Analytic Model is PLENA's fast, closed-form cost estimator. It provides performance, area, and power numbers directly from a hardware configuration without running the transactional emulator or RTL synthesis, so the co-design search loop can sweep thousands of candidate configurations cheaply.
 
 ## Performance Analytic Model

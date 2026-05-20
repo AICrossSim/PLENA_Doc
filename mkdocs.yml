@@ -55,6 +55,7 @@ nav:
       - Pipeline: pipeline.md
       - Design Space: design_space.md
   - Toolchain:
+      - Overview: toolchain_overview.md
       - Compiler: compiler.md
       - Accuracy Evaluator: accuracy_evaluator.md
       - Transactional Emulator: transactional_emulator.md

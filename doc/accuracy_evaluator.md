@@ -1,5 +1,10 @@
 # Quantization and Accuracy Evaluation
 
+<div style="text-align: center;">
+  <img src="figs/PLENA_Sys_accuracy.png" alt="Accuracy Evaluator highlighted in the PLENA system" style="max-width: 90%;">
+  <p><em>The Accuracy Evaluator within the PLENA toolchain.</em></p>
+</div>
+
 ## Quantization Methods
 
 PLENA uses post-training quantization (PTQ) based on the Microscaling (MX) data format to compress weights, activations, and the KV cache without retraining. An MX block is a group of elements that share a single scale factor; each block is defined by a tuple (datatype, bit-width, block size *B*). For example, `MXINT4` with *B* = 16 packs 16 values into 4-bit integers under one shared scale, while `MXFP4` with the same block size uses a 4-bit floating-point encoding instead.

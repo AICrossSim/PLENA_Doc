@@ -1,5 +1,10 @@
 # Transactional Emulator
 
+<div style="text-align: center;">
+  <img src="figs/PLENA_Sys_txn_sim.png" alt="Transactional Simulator highlighted in the PLENA system" style="max-width: 90%;">
+  <p><em>The Transactional Simulator within the PLENA toolchain.</em></p>
+</div>
+
 To evaluate architectural trade-offs, we developed a transaction-level (cycle-approximate) emulator in Rust that executes the generated machine code in an event-driven manner. The emulator models compute execution, instruction scheduling, and memory transactions at cycle granularity. It is integrated with [Ramulator](https://github.com/CMU-SAFARI/ramulator) and [DRAMSys](https://github.com/tukl-msd/DRAMSys) to provide detailed off-chip memory timing and bandwidth modeling, including bank-level behavior. This enables quantitative analysis of memory–compute interaction, which is critical because memory bandwidth constitutes a primary bottleneck in long-context LLM inference.
 
 The emulator supports the full PLENA architectural design space, including asymmetric mixed-precision arithmetic. By bridging analytic modeling and RTL simulation, it enables accurate evaluation of architectural mechanisms — such as flattened systolic mapping and on-chip FlashAttention — while remaining significantly faster than RTL simulation. We plan to open-source this emulator to facilitate research on LLM accelerator architectures.
