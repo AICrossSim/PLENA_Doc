@@ -62,6 +62,11 @@ nav:
       - Transactional Emulator: transactional_emulator.md
       - Analytic Model: analytic_model.md
       - Co-Design Toolchain: co_design.md
+  - Tutorials:
+      - Overview: tutorials/index.md
+      - "Tutorial 1 — Transactional Emulator": tutorials/transactional_emulator.md
+      - "Tutorial 2 — Analytic Model": tutorials/analytic_model.md
+      - "Tutorial 3 — RTL Simulation": tutorials/rtl_simulation.md
   - Related Projects: related_projects.md
 
 extra:
